@@ -6,7 +6,7 @@ package main
 import (
  "log"
 
- "github.com/ethoDomingues/braza"
+ "github.com/5tkgarage/braza"
 )
 
 

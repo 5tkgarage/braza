@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ethoDomingues/c3po"
+	"github.com/5tkgarage/c3po"
 )
 
 const (

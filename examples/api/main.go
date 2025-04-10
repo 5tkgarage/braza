@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/ethoDomingues/braza"
+	"github.com/5tkgarage/braza"
 )
 
 var db = map[string]string{}

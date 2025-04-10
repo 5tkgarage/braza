@@ -197,12 +197,12 @@ func (r *Request) parseSchema() {
 	if r.ctx.SchemaFielder == nil {
 		return
 	}
-	sch := r.ctx.SchemaFielder
-	nSch, err := MountSchemaFromRequest(sch, r)
-	if err != nil {
-		r.ctx.Response.JSON(err, 400)
+	fielder := r.ctx.SchemaFielder
+	sch := MountSchemaFromRequest(fielder, r)
+	if sch.HasErrors() {
+		r.ctx.Response.JSON(sch.Errors(), 400)
 	}
-	r.ctx.Schema = nSch
+	r.ctx.Schema = sch
 }
 
 func (r *Request) parse() {

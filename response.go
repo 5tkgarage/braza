@@ -15,7 +15,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/ethoDomingues/c3po"
+	"github.com/5tkgarage/c3po"
 )
 
 var (

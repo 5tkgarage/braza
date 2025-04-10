@@ -7,10 +7,19 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ethoDomingues/c3po"
+	"github.com/5tkgarage/c3po"
 )
 
-func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) (any, error) {
+type reqSchema struct {
+	value  any
+	errors []error
+}
+
+func (q *reqSchema) Value() any      { return q.value }
+func (q *reqSchema) Errors() []error { return q.errors }
+func (q *reqSchema) HasErrors() bool { return len(q.errors) > 0 }
+
+func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) c3po.Schema {
 	var sch any
 	var err error
 	var errs = []error{}
@@ -23,38 +32,42 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) (any, error) {
 		}
 		if v == nil || v == "" {
 			if f.Required {
-				return nil, c3po.RetMissing(f)
+				return &reqSchema{
+					errors: []error{
+						c3po.RetMissing(f),
+					},
+				}
 			}
 			sch = reflect.New(schT).Elem()
 			break
 		}
 		if isFile {
 			if f.IsSlice {
-				return v, nil
+				return &reqSchema{value: v}
 			}
-			return v.([]*File)[0], nil
+			return &reqSchema{value: v.([]*File)[0]}
 		}
 		_sch := reflect.New(schT).Elem()
 		schV := reflect.ValueOf(v)
 		if !c3po.SetReflectValue(_sch, schV, f.Escape) {
-			return nil, c3po.RetInvalidType(f)
+			return &reqSchema{errors: []error{c3po.RetInvalidType(f)}}
 		}
-		return f.CheckSchPtr(_sch), nil
+		return &reqSchema{value: _sch}
 	case reflect.Slice:
 		v, isFile := getData(f, rq)
 		if v == nil {
 			sch = reflect.MakeSlice(reflect.SliceOf(reflect.TypeOf(f.SliceType.Schema)), 0, 0)
 			if f.Required {
-				return nil, c3po.RetMissing(f)
+				return &reqSchema{errors: []error{c3po.RetMissing(f)}}
 			}
-			return sch.(reflect.Value).Interface(), nil
+			return &reqSchema{value: sch.(reflect.Value).Interface()}
 		}
 		if isFile {
-			return v, nil
+			return &reqSchema{value: v}
 		} else {
-			sch, err = f.Decode(v)
+			sch = f.Decode(v)
 		}
-		if err != nil {
+		if sch.(c3po.Schema).HasErrors() {
 			errs = append(errs, err)
 		}
 	case reflect.Struct:
@@ -93,10 +106,10 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) (any, error) {
 					errs = append(errs, c3po.RetInvalidType(fielder))
 				}
 			} else {
-				schF, e := fielder.Decode(v)
+				schF := fielder.Decode(v)
 
-				if e != nil {
-					errs = append(errs, e)
+				if schF.HasErrors() {
+					errs = append(errs, schF.Errors()...)
 				} else {
 					if !c3po.SetReflectValue(rtField, reflect.ValueOf(schF), fielder.Escape) {
 						errs = append(errs, c3po.RetInvalidType(fielder))
@@ -105,16 +118,18 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) (any, error) {
 			}
 		}
 		if len(errs) == 0 {
-			sch = f.CheckSchPtr(_sch)
+			sch = _sch
 		}
 	}
 	if len(errs) > 0 {
 		if f.Name != "" {
-			return sch, fmt.Errorf(`{"%s":%v}`, f.Name, formatErr(errs...))
+			return &reqSchema{
+				errors: []error{fmt.Errorf(`{"%s":%v}`, f.Name, formatErr(errs...))},
+			}
 		}
-		return nil, formatErr(errs...)
+		return &reqSchema{errors: []error{formatErr(errs...)}}
 	}
-	return sch, nil
+	return &reqSchema{value: sch}
 }
 
 func formatErr(errs ...error) error {

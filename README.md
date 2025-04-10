@@ -3,7 +3,7 @@
 
 ![gopher: go build](https://raw.githubusercontent.com/ashleymcnamara/gophers/master/GO_BUILD.png)
 
-## [See the Documentation](https://github.com/ethoDomingues/braza/blob/main/docs/doc.md)
+## [See the Documentation](https://github.com/5tkgarage/braza/blob/main/docs/doc.md)
 
 ## Features
     - File Watcher (in development mode)
@@ -27,7 +27,7 @@
 ### [With a correctly configured Go toolchain:](https://go.dev/doc/install)
 
 ```sh
-go get github.com/ethoDomingues/braza
+go get github.com/5tkgarage/braza
 ```
 
  _main.go_
@@ -35,7 +35,7 @@ go get github.com/ethoDomingues/braza
 ```go
 package main
 
-import "github.com/ethoDomingues/braza"
+import "github.com/5tkgarage/braza"
 
 func main() {
  app := braza.NewApp()

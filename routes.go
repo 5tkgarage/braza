@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ethoDomingues/c3po"
+	"github.com/5tkgarage/c3po"
 )
 
 type Func func(ctx *Ctx)
