@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/5tkgarage/c3po"
+	"5tk.dev/c3po"
 )
 
 type reqSchema struct {
@@ -23,6 +23,7 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) c3po.Schema {
 	var sch any
 	var err error
 	var errs = []error{}
+
 	switch f.Type {
 	default:
 		v, isFile := getData(f, rq)
@@ -47,12 +48,12 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) c3po.Schema {
 			}
 			return &reqSchema{value: v.([]*File)[0]}
 		}
-		_sch := reflect.New(schT).Elem()
+		schN := reflect.New(schT).Elem()
 		schV := reflect.ValueOf(v)
-		if !c3po.SetReflectValue(_sch, schV, f.Escape) {
+		if !c3po.SetReflectValue(schN, schV) {
 			return &reqSchema{errors: []error{c3po.RetInvalidType(f)}}
 		}
-		return &reqSchema{value: _sch}
+		return &reqSchema{value: schN}
 	case reflect.Slice:
 		v, isFile := getData(f, rq)
 		if v == nil {
@@ -102,7 +103,7 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) c3po.Schema {
 						continue
 					}
 				}
-				if !c3po.SetReflectValue(rtField, reflect.ValueOf(v), false) {
+				if !c3po.SetReflectValue(rtField, reflect.ValueOf(v)) {
 					errs = append(errs, c3po.RetInvalidType(fielder))
 				}
 			} else {
@@ -111,7 +112,7 @@ func MountSchemaFromRequest(f *c3po.Fielder, rq *Request) c3po.Schema {
 				if schF.HasErrors() {
 					errs = append(errs, schF.Errors()...)
 				} else {
-					if !c3po.SetReflectValue(rtField, reflect.ValueOf(schF), fielder.Escape) {
+					if !c3po.SetReflectValue(rtField, reflect.ValueOf(schF)) {
 						errs = append(errs, c3po.RetInvalidType(fielder))
 					}
 				}

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/5tkgarage/c3po"
+	"5tk.dev/c3po"
 	"github.com/golang-jwt/jwt/v5"
 )
 

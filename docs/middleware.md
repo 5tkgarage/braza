@@ -6,7 +6,7 @@ package main
 import (
  "fmt"
 
- "github.com/5tkgarage/braza"
+ "5tk.dev/braza"
 )
 
 func main() {

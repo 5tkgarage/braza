@@ -6,7 +6,7 @@ package main
 import (
  "log"
 
- "github.com/5tkgarage/braza"
+ "5tk.dev/braza"
 )
 
 

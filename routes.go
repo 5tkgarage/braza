@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/5tkgarage/c3po"
+	"5tk.dev/c3po"
 )
 
 type Func func(ctx *Ctx)
