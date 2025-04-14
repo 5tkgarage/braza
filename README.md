@@ -34,7 +34,7 @@ go get 5tk.dev/braza
 ```go
 package main
 
-import "github.com/5tkgarage/braza"
+import "5tk.dev/braza"
 
 func main() {
  app := braza.NewApp()
