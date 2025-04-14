@@ -1,7 +1,6 @@
 # braza
 
 
-![gopher: go build](https://raw.githubusercontent.com/ashleymcnamara/gophers/master/GO_BUILD.png)
 
 ## [See the Documentation](https://github.com/5tkgarage/braza/blob/main/docs/doc.md)
 
@@ -27,7 +26,7 @@
 ### [With a correctly configured Go toolchain:](https://go.dev/doc/install)
 
 ```sh
-go get github.com/5tkgarage/braza
+go get 5tk.dev/braza
 ```
 
  _main.go_
