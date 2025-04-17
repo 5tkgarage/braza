@@ -137,7 +137,6 @@ func (r *Response) JSON(body any, code int) {
 		r.Write(j)
 		panic(ErrHttpAbort)
 	}
-
 	j, err := json.Marshal(body)
 	if err != nil {
 		panic(err)

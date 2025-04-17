@@ -67,6 +67,8 @@ func NewRequest(req *http.Request, ctx *Ctx) *Request {
 		if (port != "80" && port != "443") && ctx.App.serverport == "" {
 			ctx.App.serverport = port
 		}
+	} else {
+		rq.Host = req.Host
 	}
 
 	return rq
@@ -200,9 +202,13 @@ func (r *Request) parseSchema() {
 	fielder := r.ctx.SchemaFielder
 	sch := MountSchemaFromRequest(fielder, r)
 	if sch.HasErrors() {
-		r.ctx.Response.JSON(sch.Errors(), 400)
+		errs := []string{}
+		for _, e := range sch.Errors() {
+			errs = append(errs, e.Error())
+		}
+		r.ctx.Response.JSON(errs, 400)
 	}
-	r.ctx.Schema = sch
+	r.ctx.Schema = sch.Value()
 }
 
 func (r *Request) parse() {
