@@ -255,7 +255,14 @@ func (app *App) parseSrvApp(addr string) {
 }
 
 func runSrv(app *App, privKey, pubKey string, host ...string) (err error) {
+	envfn := app.DotenvFileName
+	if envfn == "" {
+		envfn = ".env"
+	}
+	godotenv.Load(envfn)
+
 	app.Build(host...)
+
 	var reboot = make(chan bool)
 	var srvErr = make(chan error)
 
